@@ -1,0 +1,41 @@
+diff --git a/quiz.html b/quiz.html
+index ed3a6c4..a34b564 100644
+--- a/quiz.html
++++ b/quiz.html
+@@ -83,6 +83,7 @@
+       margin-top: 30px;
+       font-size: 20px;
+       color: #f39c12;
++      text-align: left;
+     }
+     .retry-button {
+       background-color: #3498db;
+@@ -126,6 +127,7 @@
+     { "text": "Creator", "correct": false },
+     { "text": "Light", "correct": false }
+   ]},
+   { "question": "What does 'Allah' mean?", "options": [
+     { "text": "Lord", "correct": false },
+     { "text": "The God", "correct": true },
+@@ -214,9 +216,10 @@ function showResults() {
+     document.getElementById("quiz-container").style.display = "none";
+     document.getElementById("results").style.display = "block";
+     document.getElementById("correct-answers").textContent = "Correct Answers: " + correctAnswers;
+-    document.getElementById("incorrect-attempts").textContent = "Incorrect Attempts: " + incorrectAttempts;
++    document.getElementById("incorrect-attempts").textContent = "Incorrect Attempts: " + incorrectAttempts;
+ 
+     // Show correct answers and highlight incorrect ones
+     let resultHTML = '<h3>Review Answers:</h3><ul>';
+     questions.forEach((q, i) => {
+       resultHTML += '<li>' + q.question + '<ul>';
+       q.options.forEach((opt) => {
+-        let style = opt.correct ? 'color: #2ecc71' : 'color: #e74c3c';
++        let style = opt.correct ? 'color: #2ecc71' : (opt.selected ? 'color: #e74c3c' : '');
+         resultHTML += '<li style="' + style + '">' + opt.text + '</li>';
+       });
+       resultHTML += '</ul></li>';
+     });
++    resultHTML += '</ul>';
++    document.getElementById("results").innerHTML += resultHTML;
+   }
+ 

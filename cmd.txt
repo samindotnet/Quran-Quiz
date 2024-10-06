@@ -1,0 +1,34 @@
+sed -n '/([0-9]\{1,\}:[0-9]\{1,\}:[0-9]\{1,\})/{p; n; p; n; p;}' words.1.txt |  sed 's/\t.*//' | awk ' \
+NR % 3 == 2 { \
+  question = $0  # Store the question \
+  getline  # Move to the next line (answer line) \
+  answer = $0  # Store the correct answer \
+  gsub(/\(.*\)/, "", answer)  # Remove parentheses from the answer text \
+  gsub(/"/, "", question)  # Remove quotes from the question text \
+  answers[++count] = answer \
+  rand1 = answers[int(1 + rand() * count)] \
+  rand2 = answers[int(1 + rand() * count)] \
+  rand3 = answers[int(1 + rand() * count)] \
+  # Ensure the randomly chosen incorrect answers are not the same as the correct answer \
+  while (rand1 == answer) rand1 = answers[int(1 + rand() * count)] \
+  while (rand2 == answer || rand2 == rand1) rand2 = answers[int(1 + rand() * count)] \
+  while (rand3 == answer || rand3 == rand1 || rand3 == rand2) rand3 = answers[int(1 + rand() * count)] \
+  # Generate a random position (1-4) for the correct answer \
+  correct_pos = int(1 + rand() * 4) \
+  # Single printf for multi-line output, inserting the correct answer in a random position \
+  printf "{\n  \"question\": \"What does \x27%s\x27 mean?\",\n  \"options\": [\n", question \
+  for (i = 1; i <= 4; i++) { \
+    if (i == correct_pos) { \
+      printf "    { \"text\": \"%s\", \"correct\": true }", answer \
+    } else if (i == 1) { \
+      printf "    { \"text\": \"%s\", \"correct\": false }", rand1 \
+    } else if (i == 2) { \
+      printf "    { \"text\": \"%s\", \"correct\": false }", rand2 \
+    } else { \
+      printf "    { \"text\": \"%s\", \"correct\": false }", rand3 \
+    } \
+    if (i < 4) printf ",\n" \
+    else printf "\n" \
+  } \
+  printf "  ]\n},\n" \
+}' 
